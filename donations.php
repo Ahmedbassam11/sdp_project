@@ -1,6 +1,6 @@
 <?php
-    require "donation_method.php";
-    require "billable.php";
+    require_once "donation_method.php";
+    require_once "billable.php";
     interface Billable {
         public function calcPrice(): float;
     }
@@ -17,8 +17,10 @@
         {
             foreach ($properties as $prop => $value) {
                 $this->{$prop} = $value;
+                
             }
-            
+
+             $this->donation_type = new online() ;
         }
 
         public function set_donation_type( $donation_type)
@@ -54,6 +56,7 @@
             $stmt->bind_param("issd", $this->DonationID, $this->DonationName, $this-> DonationDescription,$this->DonationAmout);
     
             if ($stmt->execute()) {
+                $this->DonationID = $con->insert_id;  
                 echo "Donation added successfully!";
             } else {
                 echo "Error: " . $stmt->error;
@@ -81,17 +84,26 @@
                 return new donations($row);
             }
         }
-        public function __toString()
-        {
+        public function __toString() {
             $str = '<pre>';
             foreach ($this as $key => $value) {
-                $str .= "$key: $value<br/>";
+                // Check if the value is an object
+                if (is_object($value)) {
+                    if (method_exists($value, '__toString')) {
+                        $str .= "$key: " . $value->__toString() . "<br/>";
+                    } else {
+                        $str .= "$key: Object of class " . get_class($value) . "<br/>";
+                    }
+                } elseif ($value === null) {
+                    $str .= "$key: Not Set<br/>";
+                } else {
+                    $str .= "$key: $value<br/>";
+                }
             }
             return $str . '</pre>';
         }
 
         public function calcPrice(): float {
-
             return $this->DonationAmout;
         }
     
@@ -101,5 +113,5 @@
 
     }
 
-  
+    // echo (new donations([]));
 ?>

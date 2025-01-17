@@ -1,6 +1,8 @@
 <?php
 
-require("UserModel.php");
+require_once "commands.php";
+require_once "template.php";
+require_once "donationdetails.php";
 
 class doner{
 
@@ -130,9 +132,82 @@ class doner{
         return $str . '</pre>';
     }
 
+    public function executeCommand(Command $command) {
+        $command->execute();
+    }
  
+    public function get_receipt($donationDetailsArray){
+        $reciept= (new DonationDetails([]))->generateSummaryReceipt($donationDetailsArray, new OnlineReceipt());
+
+        echo $reciept;
+
+    }
 
 }
 
+
+// $donationdetail= (new DonationDetails([]))->get_by_id(2);
+
+
+// $donationDetailsArray = [$donationdetail];
+
+// $doner= (new doner([],false))->get_receipt($donationDetailsArray);
+
+
+
+
+
+
+// echo "Fetching User from the database...\n";
+// $userModel = new User([],false);
+// $userModel2 = new User([],false);
+// $user = $userModel->get_by_id(1);
+// $user2 = $userModel2->get_by_id(34);
+
+// $donermodel = new doner([],false);
+// $doner = $donermodel->get_by_id(3);
+// $beneficiarymodel= new Beneficiary([],false);
+// $beneficiary = $beneficiarymodel->get_by_id(101);
+
+// $donation = new donations([
+    
+//     'DonationName' => 'Food ',
+//     'DonationID'=>6,
+//     'DonationDescription' => 'Providing food supplies to families in need',
+//     'DonationAmout' => 600.0,
+    
+// ]);
+
+// $donate = new donate([
+//     'DonateID' => 7,
+//     'Doner' => $doner,
+//     'Beneficiary' => $beneficiary,
+//     'DonateDate' => '2025-01-15',
+//     'DonateTime' => '12:30:00',
+//     'TotalAmount' => 500.0
+// ]);
+
+// $donationDetails = new donationdetails([
+    
+//     'Donation' => $donation,
+//     'Donate' => $donate,
+//     'Price' => 250.0,
+//     'ProductQty' => 2
+// ]);
+
+// // Initialize commands
+// $addCommand = new AddDonationCommand($donation, $donate, $donationDetails);
+
+
+// echo "added but not in database...\n";
+// // Create CommandInvoker and add commands
+// $invoker = new CommandInvoker();
+// $invoker->addCommand($addCommand);
+
+// echo "added in invoker but not in database...\n";
+
+// // Execute commands
+// $invoker->executeCommands();
+// echo "added successfully in database...\n";
 
 ?>
